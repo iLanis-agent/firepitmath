@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fire pit math - calculators</title>
+<style>
+  :root { --accent: #8a2a3a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: #f8f4f4; color: #2b2426; line-height: 1.55; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; color: var(--accent); }
+  .lede { margin: 0 0 14px; max-width: 640px; }
+  .note { background: #fff; border: 1px solid #e6d6d9; border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px; font-size: 0.9rem; margin: 0 0 28px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  section { background: #fff; border: 1px solid #e6d6d9; border-radius: 8px; padding: 20px 22px; }
+  h2 { font-size: 1.15rem; margin: 0 0 6px; }
+  .hint { font-size: 0.9rem; color: #837277; margin: 0 0 14px; }
+  label { display: block; font-size: 0.9rem; margin: 10px 0 3px; }
+  input { width: 100%; padding: 8px 10px; font-size: 1rem; border: 1px solid #c9b6ba; border-radius: 5px; font-family: inherit; }
+  button { margin-top: 16px; width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; font-size: 1rem; cursor: pointer; font-family: inherit; }
+  button:hover { filter: brightness(1.08); }
+  .out { margin-top: 14px; font-size: 1rem; min-height: 1.4em; }
+  .out.err { color: #a32222; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; font-size: 0.85rem; color: #ab9b9e; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Fire pit math</h1>
+  <p class="lede">The diameter names the blocks, the margin names the gravel, and the space names the verdict. Exact arithmetic, every borrowed number labeled.</p>
+  <div class="note">Illustrative planning arithmetic only. Every block, bag and clearance is a labeled default. Real fire pits follow the local fire rules, the burn ban of the day and the clearances your code asks - and a fire is never left alone.</div>
+  <div class="grid">
+    <section>
+      <h2>Ring plan</h2>
+      <p class="hint">The diameter names the blocks.</p>
+      <label for="r-d">Ring diameter (cm)</label>
+      <input id="r-d" type="number" value="90" min="0" step="5">
+      <button id="r-go">Stack the ring</button>
+      <div class="out" id="r-out"></div>
+    </section>
+    <section>
+      <h2>Gravel plan</h2>
+      <p class="hint">The margin names the gravel.</p>
+      <label for="g-d">Ring diameter (cm)</label>
+      <input id="g-d" type="number" value="90" min="0" step="5">
+      <button id="g-go">Fill the base</button>
+      <div class="out" id="g-out"></div>
+    </section>
+    <section>
+      <h2>Clearance plan</h2>
+      <p class="hint">The space names the verdict.</p>
+      <label for="c-d">Ring diameter (cm)</label>
+      <input id="c-d" type="number" value="90" min="0" step="5">
+      <label for="c-s">Open space (m)</label>
+      <input id="c-s" type="number" value="8" min="0" step="0.5">
+      <button id="c-go">Check the space</button>
+      <div class="out" id="c-out"></div>
+    </section>
+  </div>
+</main>
+<footer>Built by the app factory. <a href="index.html">About</a> &middot; <a href="https://github.com/iLanis-agent/firepitmath">Source</a></footer>
+<script src="engine.js"></script>
+<script>
+function num(id){ return parseFloat(document.getElementById(id).value); }
+function show(id, r, render){
+  var el = document.getElementById(id);
+  if (r.error) { el.textContent = r.error; el.classList.add('err'); }
+  else { el.textContent = render(r); el.classList.remove('err'); }
+}
+document.getElementById('r-go').addEventListener('click', function(){
+  var a=[num('r-d')];
+  show('r-out', FirepitMath.ringPlan.apply(null,a), function(r){ return FirepitMath.renderRing.apply(null,[r].concat(a)); });
+});
+document.getElementById('g-go').addEventListener('click', function(){
+  var a=[num('g-d')];
+  show('g-out', FirepitMath.gravelPlan.apply(null,a), function(r){ return FirepitMath.renderGravel.apply(null,[r].concat(a)); });
+});
+document.getElementById('c-go').addEventListener('click', function(){
+  var a=[num('c-d'),num('c-s')];
+  show('c-out', FirepitMath.clearancePlan.apply(null,a), function(r){ return FirepitMath.renderClearance.apply(null,[r].concat(a)); });
+});
+</script>
+</body>
+</html>
